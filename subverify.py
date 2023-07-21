@@ -2,7 +2,7 @@ import requests
 
 def get_subdomains(domain):
     subdomains = []
-    total_subdomains = 0
+    total_sources = 0  # Inicializamos com 0 e contaremos o total de fontes consultadas
 
     sources = [
         {
@@ -61,8 +61,16 @@ def get_subdomains(domain):
                     subdomains.extend([record['hostname'] for record in data.get('passive_dns', [])])
                 elif source['name'] == 'C99.nl':
                     subdomains.extend(data.get('subdomains', []))
+            else:
+                print(f"Erro ao consultar subdomínios em {source['name']}")
+
         except requests.exceptions.RequestException as e:
             print(f"Erro ao consultar subdomínios em {source['name']}: {str(e)}")
+
+        total_sources += 1  # Incrementamos o contador de fontes analisadas
+
+    subdomains = list(set(subdomains))  # Removendo duplicatas
+    subdomains.remove(domain)  # Removendo o domínio principal da lista de subdomínios
 
     total_subdomains = len(subdomains)
 
@@ -73,8 +81,9 @@ def get_subdomains(domain):
     else:
         print("Nenhum subdomínio encontrado.")
 
-    print("\nTotal de subdomínios analisados: {}".format(len(sources)))
-    print("Total de subdomínios encontrados: {}".format(total_subdomains))
+    if total_sources > 0:
+        print("\nTotal de fontes de subdomínios analisadas: {}".format(total_sources))
+        print("Total de subdomínios encontrados: {}".format(total_subdomains))
 
 if __name__ == "__main__":
     import sys
