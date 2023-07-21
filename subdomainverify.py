@@ -89,7 +89,7 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) < 2:
-        print("Uso: python subverify.py <domínio>")
+        print("Uso: python subdomainverify.py <domínio>")
         sys.exit(1)
 
     domain = sys.argv[1]
